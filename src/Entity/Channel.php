@@ -9,12 +9,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Ulid;
 
-enum Type: string
-{
-    case PUBLIC = "PUBLIC";
-    case PRIVATE = "PRIVATE";
-}
-
 #[ORM\Entity(repositoryClass: ChannelRepository::class)]
 class Channel
 {
