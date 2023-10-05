@@ -23,7 +23,7 @@ class Channel
     private ?string $caption = null;
 
     #[ORM\ManyToOne(inversedBy: 'own_channels')]
-    #[ORM\JoinColumn(nullable: true)]//todo change to false
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
     #[ORM\Column(type: "string", enumType: Type::class)]
@@ -38,13 +38,9 @@ class Channel
     /**
      * @throws \Exception
      */
-    public function __construct(User|null $owner, string $name, $caption = "", $type = Type::PUBLIC){
+    public function __construct(){
         $this->id = new Ulid();
         $this->create_date = new \DateTime("now", new \DateTimeZone($_ENV['DATETIMEZONE']));
-        $this->owner = $owner;
-        $this->name = $name;
-        $this->caption = $caption;
-        $this->type = $type;
         $this->messages = new ArrayCollection();
     }
 
