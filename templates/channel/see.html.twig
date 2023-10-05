@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau channel{% endblock %}
+
+{% block body %}
+    {{ channel.id }}<br>
+    {{ channel.name }}<br>
+    <label>
+        <textarea disabled class="textarea textarea-bordered textarea-lg w-full max-w-xs">{{ channel.caption }}</textarea>
+    </label><br>
+    {{ channel.type.name }}<br>
+    <a href="{{ path('app_channel_list') }}" class="btn btn-ghost">LISTE</a>
+    <a href="{{ path('app_dashboard') }}" class="btn btn-ghost">RETOUR</a>
+{% endblock %}

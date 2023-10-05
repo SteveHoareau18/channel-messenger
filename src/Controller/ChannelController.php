@@ -33,4 +33,58 @@ class ChannelController extends AbstractController
             'form'=>$form
         ]);
     }
+
+    /**
+     * @throws \Exception
+     */
+    #[Route('/list', name: 'app_channel_list')]
+    public function list(EntityManagerInterface $entityManager): Response
+    {
+        //TODO check user
+        return $this->render('channel/list.html.twig', [
+            'channels'=>$entityManager->getRepository(Channel::class)->findBy(['owner'=>$this->getUser()])
+        ]);
+    }
+
+    #[Route('/details/{id}', name: 'app_channel_see')]
+    public function see(EntityManagerInterface $entityManager, Channel $channel): Response
+    {
+        //TODO check user
+        return $this->render('channel/see.html.twig', [
+            'channel'=>$channel
+        ]);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    #[Route('/modify/{id}', name: 'app_channel_modify')]
+    public function modify(Request $request, EntityManagerInterface $entityManager, Channel $channel): Response
+    {
+        //todo check login && user is owner
+        $form = $this->createForm(ChannelType::class,$channel);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $entityManager->persist($channel);
+            $entityManager->flush();//todo add flashbag
+
+            return $this->redirectToRoute('app_dashboard');
+        }
+        return $this->render('channel/modify.html.twig', [
+            'form'=>$form
+        ]);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    #[Route('/delete/{id}', name: 'app_channel_delete')]
+    public function delete(Request $request, EntityManagerInterface $entityManager, Channel $channel): Response
+    {
+        //todo check login && user is owner
+        $entityManager->remove($channel);
+        $entityManager->flush();//todo add flashbag
+
+        return $this->redirectToRoute('app_dashboard');
+    }
 }
