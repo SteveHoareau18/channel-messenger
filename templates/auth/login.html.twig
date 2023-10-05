@@ -1,0 +1,60 @@
+{% extends 'auth.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<div class="flex min-h-screen">
+
+    <!-- Container -->
+    <div class="flex flex-row w-full">
+
+      <!-- Sidebar -->
+      <div class='hidden lg:flex flex-col justify-between bg-primary lg:p-8 xl:p-12 lg:max-w-sm xl:max-w-lg'>
+        <div class="flex items-center justify-start space-x-3">
+          <span class="bg-black rounded-full w-8 h-8"></span>
+          <a href="#" class="font-medium text-xl">Channel Messenger</a>
+        </div>
+        <div class='space-y-5'>
+          <h1 class="lg:text-3xl xl:text-5xl xl:leading-snug font-extrabold">Entrez vos identifiants pour ouvrir une session</h1>
+          <p class="text-lg">Vous n'avez pas de compte ?</p>
+          <a href="{{ path('auth_register') }}" class="inline-block flex-none px-4 py-3 border-2 rounded-lg font-medium border-black bg-black text-white">Créer un compte</a>
+        </div>
+        <p class="font-medium">© {{ "now"|date('Y') }} CDA6</p>
+      </div>
+
+      <!-- Login -->
+      <div class="flex flex-1 flex-col items-center justify-center px-10 relative">
+        <div class="flex lg:hidden justify-between items-center w-full py-4">
+          <div class="flex items-center justify-start space-x-3">
+            <span class="bg-black rounded-full w-6 h-6"></span>
+            <a href="#" class="font-medium text-lg">Channel Messenger</a>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span>Pas de compte? </span>
+            <a href="{{ path('auth_register') }}" class="underline font-medium text-[#070eff]">
+              S'incrire dès maintenant
+            </a>
+          </div>
+        </div>
+        <!-- Login box -->
+        <div class="flex flex-1 flex-col  justify-center space-y-5 max-w-md">
+          <div class="flex flex-col space-y-2 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold">Se connecter à mon compte</h2>
+          </div>
+          {% if error %}
+            {% include "components/alert.html.twig" with { type: 'danger', message: error.messageKey|trans(error.messageData, 'security') } %}
+          {% endif %}
+          <form method="post">
+            <div class="flex flex-col max-w-md space-y-5">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+              <input type="email" name="email" placeholder="Email" class="flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal" value="{{ last_email }}">
+              <input type="password" name="password" placeholder="Mot de passe" class="flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal">
+              <button class="flex items-center justify-center flex-none px-3 py-2 md:px-4 md:py-3 border-2 rounded-lg font-medium border-black bg-black text-white">Se connecter</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}
