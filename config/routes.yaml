@@ -5,4 +5,4 @@
 #     type: attribute
 controllersTest:
     path: /
-    controller: App\Controller\ControllerTestController::index
+    controller: App\Controller\BoxMessageController::index
