@@ -7,6 +7,7 @@ use App\Form\RegisterType;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -58,5 +59,28 @@ class AuthController extends AbstractController
     public function logout(): never
     {
         throw new \Exception('Ooops !');
+    }
+
+    #[Route('/me', name: 'auth_me', methods: ['POST'])]
+    public function logged(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $email = $request->request->get('email');
+        $password = $request->request->get('password');
+
+        if (empty($email) && empty($password)) {
+            return new JsonResponse(['success' => true, "message" => "need credentials"], 200);
+        }
+
+        $user = $em->getRepository(User::class)->findOneBy([
+            'email' => $request->request->get('email'),
+        ]);
+
+        if ($user) {
+            if ($passwordHasher->isPasswordValid($user, $password)) {
+                return new JsonResponse(['success' => true], 200);
+            }
+        }
+
+        return new JsonResponse(['success' => false], 200);
     }
 }
