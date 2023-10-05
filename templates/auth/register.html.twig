@@ -1,0 +1,60 @@
+{% extends 'auth.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<div class="flex min-h-screen">
+
+    <!-- Container -->
+    <div class="flex flex-row w-full">
+
+      <!-- Sidebar -->
+      <div class='hidden lg:flex flex-col justify-between bg-primary lg:p-8 xl:p-12 lg:max-w-sm xl:max-w-lg'>
+        <div class="flex items-center justify-start space-x-3">
+          <span class="bg-black rounded-full w-8 h-8"></span>
+          <a href="{{ path('auth_login') }}" class="font-medium text-xl">Channel Messenger</a>
+        </div>
+        <div class='space-y-5'>
+          <h1 class="lg:text-3xl xl:text-5xl xl:leading-snug font-extrabold">Bienvenue sur notre page d'inscription</h1>
+          <p class="text-lg">Vous avez déjà un compte ?</p>
+          <a href="{{ path('auth_login') }}" class="inline-block flex-none px-4 py-3 border-2 rounded-lg font-medium border-black bg-black text-white">Se connecter</a>
+        </div>
+        <p class="font-medium">© {{ "now"|date('Y') }} CDA6</p>
+      </div>
+
+      <!-- Login -->
+      <div class="flex flex-1 flex-col items-center justify-center px-10 relative">
+        <div class="flex lg:hidden justify-between items-center w-full py-4">
+          <div class="flex items-center justify-start space-x-3">
+            <span class="bg-black rounded-full w-6 h-6"></span>
+            <a href="#" class="font-medium text-lg">Channel Messenger</a>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span>Déja un compte ? </span>
+            <a href="#" class="underline font-medium text-[#070eff]">
+              Se connecter
+            </a>
+          </div>
+        </div>
+        <!-- Login box -->
+        <div class="flex flex-1 flex-col  justify-center space-y-5 max-w-md">
+          <div class="flex flex-col space-y-2 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold">Créer un nouveau compte</h2>
+          </div>
+          {{form_start(form)}}
+            <div class="flex flex-col max-w-md space-y-5">
+              {{form_widget(form.firstname, { attr: { placeholder: 'Nom', class: 'flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal'}})}}
+              {{form_widget(form.lastname, { attr: { placeholder: 'Prénom', class: 'flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal'}})}}
+              {{form_widget(form.username, { attr: { placeholder: "Nom d'utilisateur", class: 'flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal'}})}}
+              {{form_widget(form.email, { attr: { placeholder: 'Email', class: 'flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal'}})}}
+              {{form_widget(form.password.first, { attr: { placeholder: 'Mot de passe', class: 'flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal'}})}}
+              {{form_widget(form.password.second, { attr: { placeholder: 'Confirmez le mot de passe', class: 'flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal'}})}}
+              <button class="flex items-center justify-center flex-none px-3 py-2 md:px-4 md:py-3 border-2 rounded-lg font-medium border-black bg-black text-white">S'inscrire</button>
+            </div>
+          {{form_end(form)}}
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}
