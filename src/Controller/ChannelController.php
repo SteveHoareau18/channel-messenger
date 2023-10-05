@@ -6,6 +6,7 @@ use App\Entity\Channel;
 use App\Form\ChannelType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,17 +21,17 @@ class ChannelController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         //todo check login
-        $channel = new Channel($this->getUser(),'');
-        $form = $this->createForm(ChannelType::class,$channel);
+        $channel = new Channel($this->getUser(), '');
+        $form = $this->createForm(ChannelType::class, $channel);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($channel);
-            $entityManager->flush();//todo add flashbag
+            $entityManager->flush(); //todo add flashbag
 
             return $this->redirectToRoute('app_dashboard');
         }
         return $this->render('channel/new.html.twig', [
-            'form'=>$form
+            'form' => $form
         ]);
     }
 
@@ -38,11 +39,16 @@ class ChannelController extends AbstractController
      * @throws \Exception
      */
     #[Route('/list', name: 'app_channel_list')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(Request $request, EntityManagerInterface $entityManager): Response
     {
-        //TODO check user
+        $channels = $entityManager->getRepository(Channel::class)->findBy(['owner' => $this->getUser()]);
+
+        if ($request->headers->get('device')) {
+            return $this->json(["channels" => $channels]);
+        }
+
         return $this->render('channel/list.html.twig', [
-            'channels'=>$entityManager->getRepository(Channel::class)->findBy(['owner'=>$this->getUser()])
+            'channels' => $channels
         ]);
     }
 
@@ -51,7 +57,7 @@ class ChannelController extends AbstractController
     {
         //TODO check user
         return $this->render('channel/see.html.twig', [
-            'channel'=>$channel
+            'channel' => $channel
         ]);
     }
 
@@ -62,16 +68,16 @@ class ChannelController extends AbstractController
     public function modify(Request $request, EntityManagerInterface $entityManager, Channel $channel): Response
     {
         //todo check login && user is owner
-        $form = $this->createForm(ChannelType::class,$channel);
+        $form = $this->createForm(ChannelType::class, $channel);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($channel);
-            $entityManager->flush();//todo add flashbag
+            $entityManager->flush(); //todo add flashbag
 
             return $this->redirectToRoute('app_dashboard');
         }
         return $this->render('channel/modify.html.twig', [
-            'form'=>$form
+            'form' => $form
         ]);
     }
 
@@ -83,7 +89,7 @@ class ChannelController extends AbstractController
     {
         //todo check login && user is owner
         $entityManager->remove($channel);
-        $entityManager->flush();//todo add flashbag
+        $entityManager->flush(); //todo add flashbag
 
         return $this->redirectToRoute('app_dashboard');
     }
