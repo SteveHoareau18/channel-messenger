@@ -1,0 +1,10 @@
+{% set variants = {'danger': 'red', 'success': 'green'} %}
+
+<div role="alert" class="rounded border-s-4 border-{{ variants[type] }}-500 bg-{{ variants[type] }}-50 p-4">
+  {% if title is defined %}
+    <strong class="block font-medium text-{{ variants[type] }}-800 mb-2">{{ title }}</strong>
+  {% endif %}
+  
+
+  <p class="text-sm text-{{ variants[type] }}-700">{{ message }}</p>
+</div>
