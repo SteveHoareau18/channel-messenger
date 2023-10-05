@@ -1,7 +1,8 @@
-controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
+# controllers:
+#     resource:
+#         path: ../src/Controller/
+#         namespace: App\Controller
+#     type: attribute
 controllersTest:
-    path: ../src/ControllerTest
+    path: /
+    controller: App\Controller\ControllerTestController::index
