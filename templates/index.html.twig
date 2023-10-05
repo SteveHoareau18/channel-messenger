@@ -19,34 +19,38 @@
                     <div class="h-20 w-20 rounded-full border overflow-hidden">
                         <img src="https://media.tenor.com/zCWcvMByt9kAAAAd/monkey-rizz-lightskin-stare.gif"alt="Avatar"class="h-full w-full"/>
                     </div>
-                    <div class="text-sm font-semibold mt-2">RIzz Monkey</div>
-                    <div class="text-xs text-gray-500">Aka Beta Tester</div>
+                    <div class="text-sm font-semibold mt-2">{{ app.user.username }}</div>
+{#                    <div class="text-xs text-gray-500">{{ app.user }}</div>#}
                     <div class="flex flex-row items-center mt-3">
-                        {# <div class="flex flex-col justify-center h-4 w-8 bg-indigo-500 rounded-full">
-              <div class="h-3 w-3 bg-white rounded-full self-end mr-1"></div>
-            </div>
-            <div class="leading-none ml-1 text-xs">Active</div> #}
-                        <form action="https://youtu.be/_QMEy8SY2OY">
-                            <button class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0" onclick="FunctionDeco()" type="submit">
-                                <span>Déconnexion</span>
-                            </button>
-                        </form>
-
+                        <ul>
+                            <li>
+                                <a href="{{ path('auth_logout') }}" class="flex items-center justify-center bg-white hover:bg-indigo-200 rounded-xl text-indigo-500 px-4 py-1 flex-shrink-0">
+                                    <span>Déconnexion</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ path('app_channel_new') }}" class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
+                                    <span>Créer un channel</span>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="flex flex-col mt-8">
                     <div class="flex flex-row items-center justify-between text-xs">
-                        <span class="font-bold">Groupe</span>
+                        <span class="font-bold">Channels</span>
                         <span class="flex items-center justify-center bg-gray-300 h-4 w-4 rounded-full">
-                1
+                {{ app.user.ownChannels|length }}
               </span>
                     </div>
                     <div class="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
                         <button class="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
+                            {% for channel in app.user.ownChannels %}
                             <div class="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-                                G
+                                {{ channel.name|slice(0, 1) }}
                             </div>
-                            <div class="ml-2 text-sm font-semibold">Groupe de classe</div>
+                            <div class="ml-2 text-sm font-semibold">{{ channel.name }}</div>
+                            {% endfor %}
                         </button>
                     </div>
                 </div>
