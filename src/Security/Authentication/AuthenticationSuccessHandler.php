@@ -30,9 +30,12 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
         return new RedirectResponse($this->urlGenerator->generate('app_dashboard'));
     }
 
-    protected function updateLastLoginDate(User $user)
+    /**
+     * @throws \Exception
+     */
+    protected function updateLastLoginDate(User $user): void
     {
-        $user->setLastConnectionDate(new DateTime());
+        $user->setLastConnectionDate(new DateTime("now", new \DateTimeZone($_ENV['DATETIMEZONE'])));
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }

@@ -2,6 +2,7 @@ module.exports = {
     content: [
         "./assets/**/*.js",
         "./templates/**/*.html.twig",
+        "./src/**/*.php",
     ],
     theme: {
         extend: {
@@ -10,5 +11,5 @@ module.exports = {
             }
         },
     },
-    plugins: [require("daisyui")],
+    plugins: [],
 }

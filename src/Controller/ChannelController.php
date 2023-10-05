@@ -20,7 +20,8 @@ class ChannelController extends AbstractController
     #[Route('/new', name: 'app_channel_new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        //todo check login
+        if (!$this->getUser())
+            return $this->redirectToRoute("auth_login");
         $channel = new Channel($this->getUser(), '');
         $form = $this->createForm(ChannelType::class, $channel);
         $form->handleRequest($request);
@@ -41,12 +42,13 @@ class ChannelController extends AbstractController
     #[Route('/list', name: 'app_channel_list')]
     public function list(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->getUser())
+            return $this->redirectToRoute("auth_login");
         $channels = $entityManager->getRepository(Channel::class)->findBy(['owner' => $this->getUser()]);
 
         if ($request->headers->get('device')) {
             return $this->json(["channels" => $channels]);
         }
-
         return $this->render('channel/list.html.twig', [
             'channels' => $channels
         ]);
@@ -55,7 +57,8 @@ class ChannelController extends AbstractController
     #[Route('/details/{id}', name: 'app_channel_see')]
     public function see(EntityManagerInterface $entityManager, Channel $channel): Response
     {
-        //TODO check user
+        if (!$this->getUser())
+            return $this->redirectToRoute("auth_login");
         return $this->render('channel/see.html.twig', [
             'channel' => $channel
         ]);
@@ -67,7 +70,10 @@ class ChannelController extends AbstractController
     #[Route('/modify/{id}', name: 'app_channel_modify')]
     public function modify(Request $request, EntityManagerInterface $entityManager, Channel $channel): Response
     {
-        //todo check login && user is owner
+        if (!$this->getUser())
+            return $this->redirectToRoute("auth_login");
+        if ($channel->getOwner()->getUserIdentifier() != $this->getUser()->getUserIdentifier())
+            return $this->redirectToRoute("app_dashboard");
         $form = $this->createForm(ChannelType::class, $channel);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -87,7 +93,8 @@ class ChannelController extends AbstractController
     #[Route('/delete/{id}', name: 'app_channel_delete')]
     public function delete(Request $request, EntityManagerInterface $entityManager, Channel $channel): Response
     {
-        //todo check login && user is owner
+        if ($channel->getOwner()->getUserIdentifier() != $this->getUser()->getUserIdentifier())
+            return $this->redirectToRoute("app_dashboard");
         $entityManager->remove($channel);
         $entityManager->flush(); //todo add flashbag
 
