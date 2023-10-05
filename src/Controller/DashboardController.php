@@ -11,6 +11,7 @@ class DashboardController extends AbstractController
     #[Route('/dashboard', name: 'app_dashboard')]
     public function index(): Response
     {
+        if(!$this->getUser()) return $this->redirectToRoute('auth_login');
         return $this->render('index.html.twig', [
 
         ]);
