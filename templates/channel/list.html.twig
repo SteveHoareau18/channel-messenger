@@ -5,7 +5,8 @@
 {% block body %}
     <ul>
         {% for channel in channels %}
-            <li>{{ channel.name }}</li>
+            <li>{{ channel.name }} <a href="{{ path('app_channel_see',{'id':channel.id}) }}" class="btn btn-ghost">VOIR</a><a href="{{ path('app_channel_modify',{'id':channel.id}) }}" class="btn btn-ghost">MODIFIER</a></li>
         {% endfor %}
     </ul>
+    <a href="{{ path('app_dashboard') }}" class="btn btn-ghost">RETOUR</a>
 {% endblock %}
