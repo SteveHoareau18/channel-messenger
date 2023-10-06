@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MessageRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,9 +32,9 @@ class Message
     #[ORM\JoinColumn(nullable: false)]
     private ?Channel $channel = null;
 
-    public function __construct(String $content){
-        if($content == "") throw new \InvalidArgumentException("Contenu vide");
-
+    public function __construct()
+    {
+        $this->send_date = new DateTime();
     }
 
     public function getId(): ?int

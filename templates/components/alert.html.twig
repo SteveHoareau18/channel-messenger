@@ -1,10 +1,25 @@
-{% set variants = {'danger': 'red', 'success': 'green'} %}
 
-<div role="alert" class="rounded border-s-4 border-{{ variants[type] }}-500 bg-{{ variants[type] }}-50 p-4">
+{% if type == 'danger' %}
+<div role="alert" class="rounded border-s-4 border-red-500 bg-red-50 p-4">
   {% if title is defined %}
-    <strong class="block font-medium text-{{ variants[type] }}-800 mb-2">{{ title }}</strong>
+    <strong class="block font-medium text-red-800 mb-2">{{ title }}</strong>
   {% endif %}
-  
-
-  <p class="text-sm text-{{ variants[type] }}-700">{{ message }}</p>
+  <p class="text-sm text-red-700">{{ message }}</p>
 </div>
+{% endif %}
+{% if type == 'success' %}
+<div role="alert" class="rounded border-s-4 border-green-500 bg-green-50 p-4">
+  {% if title is defined %}
+    <strong class="block font-medium text-green-800 mb-2">{{ title }}</strong>
+  {% endif %}
+  <p class="text-sm text-green-700">{{ message }}</p>
+</div>
+{% endif %}
+{% if type == 'info' %}
+<div role="alert" class="rounded border-s-4 border-blue-500 bg-blue-50 p-4">
+  {% if title is defined %}
+    <strong class="block font-medium text-blue-800 mb-2">{{ title }}</strong>
+  {% endif %}
+  <p class="text-sm text-blue-700">{{ message }}</p>
+</div>
+{% endif %}
