@@ -39,10 +39,32 @@
                         <h2 class="text-3xl md:text-4xl font-bold">Nouvelle invitation</h2>
                     </div>
                     {{ form_start(form) }}
+
                     {{ form_end(form) }}
                 </div>
             </div>
         </div>
 
+        <datalist id="userList">
+            <option></option>
+        </datalist>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded",()=>{
+            document.addEventListener("input",()=>{
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ path('api_filter_user_list') }}',
+                    data: { query: document.getElementById('channel_user_user').value },
+                    success: function(response) {
+                        console.log(response);
+                        document.getElementById('userList').options[0].value=response;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText+" | "+status+" | "+error);
+                    }
+                });
+            })
+        });
+    </script>
 {% endblock %}

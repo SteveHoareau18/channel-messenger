@@ -16,7 +16,9 @@ class ChannelUserType extends AbstractType
         $builder
             ->add('user', TextType::class,[
                 'mapped'=>false,
-                'label'=>'Pseudo ou E-mail de l\'utilisateur'
+                'label'=>'Pseudo ou E-mail de l\'utilisateur',
+                'attr'=>['class'=>'flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal',
+                'list'=>'userList'],
             ])
             ->add('submit',SubmitType::class,[
                 'label'=>'INVITER'
