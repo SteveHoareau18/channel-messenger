@@ -10,6 +10,7 @@ use App\Form\ChannelType;
 use App\Form\ChannelUserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -118,11 +119,17 @@ class ChannelController extends AbstractController
      * @throws \Exception
      */
     #[Route('/list', name: 'app_channel_list')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(Request $request, EntityManagerInterface $entityManager): Response
     {
-        if(!$this->getUser()) return $this->redirectToRoute("auth_login");
+        if (!$this->getUser())
+            return $this->redirectToRoute("auth_login");
+        $channels = $entityManager->getRepository(Channel::class)->findBy(['owner' => $this->getUser()]);
+
+        if ($request->headers->get('device')) {
+            return $this->json(["channels" => $channels]);
+        }
         return $this->render('channel/list.html.twig', [
-            'channels'=>$entityManager->getRepository(Channel::class)->findBy(['owner'=>$this->getUser()])
+            'channels' => $channels
         ]);
     }
 

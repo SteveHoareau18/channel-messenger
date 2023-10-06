@@ -1,0 +1,10 @@
+<div class="{% if me.id == message.sender.id %}col-start-6 col-end-13{% else %}col-start-1 col-end-8{% endif %} p-3 rounded-lg" {{attributes}}>
+    <div class="flex {% if me.id == message.sender.id %}items-center justify-start flex-row-reverse{% else %}flex-row items-center{% endif %}">
+        <div class="h-10 w-10 rounded-full border overflow-hidden flex items-center justify-center">
+            <span>{{ message.sender.username|first|upper }}</span>
+        </div>
+        <div class="relative text-sm {% if me.id == message.sender.id %}bg-indigo-100 mr-3{% else %}bg-white ml-3{% endif %} py-2 px-4 shadow rounded-xl">
+            <div>{{ message.content }}</div>
+        </div>
+    </div>
+</div>
