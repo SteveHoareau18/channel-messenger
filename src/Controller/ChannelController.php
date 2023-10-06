@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Channel;
 use App\Entity\ChannelUser;
 use App\Form\ChannelType;
+use App\Form\ChannelUserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,14 +19,43 @@ class ChannelController extends AbstractController
     /**
      * @throws \Exception
      */
-    #[Route('/{id}', name: 'app_channel_index')]
+    #[Route('/invite/{id}', name: 'app_channel_index_invite')]
+    public function inviteIndex(Request $request, EntityManagerInterface $entityManager, Channel $channel): Response
+    {
+        $channelUser = new ChannelUser();
+        $form = $this->createForm(ChannelUserType::class,$channelUser);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $channelUser->setChannel($channel);
+            dd($form);
+            $entityManager->persist($channelUser);
+            $entityManager->flush();//todo add flashbag
+
+            return $this->redirectToRoute('app_channel_index',['id'=>$channel->getId()]);
+        }
+        return $this->render('channel/invite/invite.index.html.twig', [
+            'form'=>$form,
+            'channel'=>$channel
+        ]);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    #[Route('/c/{id}', name: 'app_channel_index')]
     public function index(EntityManagerInterface $entityManager, Channel $channel): Response
     {
         if(!$this->getUser()) return $this->redirectToRoute("auth_login");
 
         if($entityManager->getRepository(ChannelUser::class)->findBy(['channel'=>$channel,'user'=>$this->getUser()]) ||
-            $channel->getOwner()->getUserIdentifier() == $this->getUser()->getUserIdentifier())
-                return $this->render('index.html.twig', ['channel'=>$channel]);
+            $channel->getOwner()->getUserIdentifier() == $this->getUser()->getUserIdentifier()) {
+
+            $other_channels = $entityManager->getRepository(ChannelUser::class)->findBy(['user'=>$this->getUser()]);
+            return $this->render('index.html.twig', [
+                'channel' => $channel,
+                'other_channels' => $other_channels
+            ]);
+        }
         return $this->redirectToRoute("app_dashboard");
     }
 
@@ -89,7 +119,8 @@ class ChannelController extends AbstractController
             return $this->redirectToRoute('app_dashboard');
         }
         return $this->render('channel/modify.html.twig', [
-            'form'=>$form
+            'form'=>$form,
+            'channel'=>$channel
         ]);
     }
 
