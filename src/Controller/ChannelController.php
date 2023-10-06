@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Channel;
 use App\Entity\ChannelUser;
+use App\Entity\Type;
+use App\Entity\User;
 use App\Form\ChannelType;
 use App\Form\ChannelUserType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,15 +29,28 @@ class ChannelController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $channelUser->setChannel($channel);
-            dd($form);
-            $entityManager->persist($channelUser);
-            $entityManager->flush();//todo add flashbag
+            $user = $entityManager->getRepository(User::class)->findOneBy(['username'=>$form->get('user')->getData()]);
+            if($user == null) $user = $entityManager->getRepository(User::class)->findOneBy(['email'=>$form->get('user')->getData()]);
+            if($user != null) {
+                if($entityManager->getRepository(ChannelUser::class)->findBy(['channel'=>$channel,'user'=>$user])){
+                    //todo add flashbag error
+                    return $this->redirectToRoute("app_channel_index_invite",['id'=>$channel->getId()]);
+                }
+                $channelUser->setUser($user);
+                $entityManager->persist($channelUser);
+                $entityManager->flush();//todo add flashbag
 
-            return $this->redirectToRoute('app_channel_index',['id'=>$channel->getId()]);
+                return $this->redirectToRoute('app_channel_index', ['id' => $channel->getId()]);
+            }else{
+                //todo add flashbag error
+                return $this->redirectToRoute("app_channel_index_invite",['id'=>$channel->getId()]);
+            }
         }
+        $users = $entityManager->getRepository(User::class)->findAll();
         return $this->render('channel/invite/invite.index.html.twig', [
             'form'=>$form,
-            'channel'=>$channel
+            'channel'=>$channel,
+            'userList'=>$users
         ]);
     }
 
@@ -47,16 +62,34 @@ class ChannelController extends AbstractController
     {
         if(!$this->getUser()) return $this->redirectToRoute("auth_login");
 
-        if($entityManager->getRepository(ChannelUser::class)->findBy(['channel'=>$channel,'user'=>$this->getUser()]) ||
-            $channel->getOwner()->getUserIdentifier() == $this->getUser()->getUserIdentifier()) {
+        if($channel->getType() == Type::PRIVATE){
+            $channelUser = $entityManager->getRepository(ChannelUser::class)->findOneBy(['channel'=>$channel,'user'=>$this->getUser()]);
+            if($channelUser != null ||
+                $channel->getOwner()->getUserIdentifier() == $this->getUser()->getUserIdentifier()) {
 
+                if($channelUser != null){
+                    if($channelUser->getJoinDate()==null){
+                        $channelUser->setJoinDate(new \DateTime("now",new \DateTimeZone($_ENV['DATETIMEZONE'])));
+                        $entityManager->persist($channelUser);
+                        $entityManager->flush();
+                    }
+                }
+
+                $other_channels = $entityManager->getRepository(ChannelUser::class)->findBy(['user'=>$this->getUser()]);
+                return $this->render('index.html.twig', [
+                    'channel' => $channel,
+                    'other_channels' => $other_channels
+                ]);
+            }else{
+                return $this->redirectToRoute("app_dashboard");
+            }
+        }else{
             $other_channels = $entityManager->getRepository(ChannelUser::class)->findBy(['user'=>$this->getUser()]);
             return $this->render('index.html.twig', [
-                'channel' => $channel,
-                'other_channels' => $other_channels
+                    'channel' => $channel,
+                    'other_channels' => $other_channels
             ]);
         }
-        return $this->redirectToRoute("app_dashboard");
     }
 
     /**
