@@ -51,6 +51,16 @@ class ChannelUser
         return $this->channel;
     }
 
+    /**
+     * @param Channel|null $channel
+     */
+    public function setChannel(?Channel $channel): void
+    {
+        $this->channel = $channel;
+    }
+
+
+
     public function getJoinDate(): ?\DateTimeInterface
     {
         return $this->join_date;
