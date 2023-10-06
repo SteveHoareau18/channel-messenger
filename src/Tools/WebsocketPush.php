@@ -3,10 +3,11 @@
 namespace App\Tools;
 
 class WebsocketPush {
-    public static function channel(String $channelUuid)
+    public static function channel(String $channelUuid, int $userId)
     {
         $data = array(
             'channel' => $channelUuid,
+            'sender' => $userId,
         );
 
         $payload = json_encode($data);
