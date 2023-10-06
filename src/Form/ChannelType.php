@@ -26,7 +26,7 @@ class ChannelType extends AbstractType
             ->add('caption', TextareaType::class, [
                 'mapped'=>true,
                 'label'=>'Description',
-                'attr'=>['class'=>'input input-bordered w-full max-w-xs']
+                'attr'=>['class'=>'flex px-3 py-2 md:px-4 md:py-3 border-2 border-black rounded-lg font-medium placeholder:font-normal']
             ])
             ->add('type',  ChoiceType::class,
                 [
@@ -35,9 +35,14 @@ class ChannelType extends AbstractType
                         'Privé' => Type::PRIVATE,
                     ],
                     'expanded' => true,
-                    'mapped'=>true
+                    'mapped'=>true,
+                    'choice_attr'=>['class'=>'m-2 text-sm font-medium'],
+                    'label_attr'=>['class'=>'ml-2 text-sm font-medium text-gray-400'],
+                    'row_attr'=>['class'=>'flex items-center mb-4'],
                 ])
-            ->add('submit',SubmitType::class)
+            ->add('submit',SubmitType::class, [
+                'label'=>'ENREGISTRER'
+            ])
         ;
     }
 
